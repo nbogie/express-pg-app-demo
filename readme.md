@@ -24,6 +24,9 @@ touch index.js
 
 ### create .env file
 
+1. copy .env.example to .env
+2. change the variables appropriately (PORT, DATABASE_URL)
+
 # DB testing with render
 
 ### external address:

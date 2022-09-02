@@ -17,37 +17,36 @@ app.use(cors());
 // use the environment variable PORT, or 4000 as a fallback
 const PORT_NUMBER = process.env.PORT ?? 4000;
 
-app.get("/", (req, res) => {
-  res.send("hello!");
-});
-
 const dbConfig: ClientConfig = {
   connectionString: getEnvVarOrFail("DATABASE_URL"),
   ssl: { rejectUnauthorized: false }, //this only for heroku, or render (internal)
 };
 
 const client = new Client(dbConfig);
-client.connect(); //TODO: await this!
+
+app.get("/", (req, res) => {
+  res.send("hello!");
+});
 
 // GET /items
 app.get("/items", async (req, res) => {
   try {
-    const dbResult = await client.query("select now()");
-    console.log("ran query, got", dbResult.rows);
+    const dbResult = await client.query("select * from films");
+    console.log(`Ran query, got ${dbResult.rowCount} row(s)`);
     res.send({ data: dbResult.rows });
-
-    //TODO: this might be a problem if the conn is closed before dbResult.rows is sent to the client.
   } catch (error) {
-    let message = "Unknown error";
-    if (error instanceof Error) {
-      message = error.message;
-      console.error(error);
-    } else {
-      console.error(message);
-    }
-    res.status(500).json({ error: message });
+    logErrorMessage(error);
+    res.status(500).json({ error: getErrorMessageOrDefault(error) });
   }
 });
+
+function getErrorMessageOrDefault(error: unknown) {
+  return error instanceof Error ? error.message : "Unknown error";
+}
+
+function logErrorMessage(error: unknown) {
+  console.error(error);
+}
 
 function getEnvVarOrFail(varName: string) {
   const val = process.env[varName];
@@ -57,6 +56,13 @@ function getEnvVarOrFail(varName: string) {
   return val;
 }
 
-app.listen(PORT_NUMBER, () => {
-  console.log(`Server is listening on port ${PORT_NUMBER}!`);
-});
+async function connectAndStart() {
+  //we don't want to start listening til we have a successful connection
+  await client.connect();
+  console.log("Established connection to db");
+  app.listen(PORT_NUMBER, () => {
+    console.log(`Server is listening on port ${PORT_NUMBER}!`);
+  });
+}
+
+connectAndStart();
