@@ -24,6 +24,25 @@ touch index.js
 - add `"start:dev": "ts-node-dev src/index.ts"`
 - add `"test": "jest"`
 
+### create jest config to support ts
+
+`yarn ts-jest config:init`
+
+I also added some more so the whole jest.config.js reads something like:
+
+```
+/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
+module.exports = {
+  clearMocks: true,
+  coverageProvider: "v8",
+  preset: "ts-jest",
+  testEnvironment: "node",
+  // collectCoverage: true,
+  // The directory where Jest should output its coverage files
+  // coverageDirectory: "coverage",
+};
+```
+
 ### create .env file
 
 1. copy .env.example to .env
