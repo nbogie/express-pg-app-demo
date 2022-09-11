@@ -4,6 +4,7 @@ Rough instructions to recreate from scratch:
 yarn init -y
 yarn add express cors pg dotenv
 yarn add -D typescript ts-node-dev @types/express @types/cors @types/pg
+yarn add -D ts-jest jest @types/jest
 yarn run tsc --init
 mkdir src
 touch index.js
@@ -21,6 +22,7 @@ touch index.js
 - add `"build": "tsc"`
 - add `"start": "node dist/index.js"`
 - add `"start:dev": "ts-node-dev src/index.ts"`
+- add `"test": "jest"`
 
 ### create .env file
 
