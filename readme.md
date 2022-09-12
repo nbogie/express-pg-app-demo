@@ -1,13 +1,13 @@
 Rough instructions to recreate from scratch:
 
-```
+```bash
 yarn init -y
 yarn add express cors pg dotenv
 yarn add -D typescript ts-node-dev @types/express @types/cors @types/pg
 yarn add -D ts-jest jest @types/jest
 yarn run tsc --init
 mkdir src
-touch index.js
+touch src/index.js
 ```
 
 ### changes to tsconfig.json:
@@ -19,18 +19,23 @@ touch index.js
 
 #### add scripts
 
-- add `"build": "tsc"`
-- add `"start": "node dist/index.js"`
-- add `"start:dev": "ts-node-dev src/index.ts"`
-- add `"test": "jest"`
+````json
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "start:dev": "ts-node-dev src/index.ts",
+    "test": "jest"
+  }
 
 ### create jest config to support ts
 
-`yarn ts-jest config:init`
+```bash
+yarn ts-jest config:init
+````
 
 I also added some more so the whole jest.config.js reads something like:
 
-```
+```js
 /** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
   clearMocks: true,
@@ -48,7 +53,7 @@ module.exports = {
 1. copy .env.example to .env
 2. change the variables appropriately (PORT, DATABASE_URL)
 
-# DB testing with render
+# DB testing with render (not heroku)
 
 ### external address:
 
@@ -71,5 +76,5 @@ So to make a connection from render express to render DB either:
 
 # Render typescript build
 
-- build command: `yarn; yarn build`
+- build command: `yarn && yarn build`
 - start command: `yarn start`
